@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  supplier-service:
+    build: .
+    container_name: supplier-service
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    networks:
+      - ea2sa-net
+
+networks:
+  ea2sa-net:
+    external: true

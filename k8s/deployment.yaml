@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supplier-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: supplier-service
+  template:
+    metadata:
+      labels:
+        app: supplier-service
+    spec:
+      containers:
+      - name: supplier-service
+        image: supplier-service:latest
+        ports:
+        - containerPort: 3001
+        env:
+        - name: POSTGRES_HOST
+          value: "your-db-host"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          value: "northwind"
+        - name: POSTGRES_USER
+          value: "gary"
+        - name: POSTGRES_PASSWORD
+          value: "Spen1cer"
