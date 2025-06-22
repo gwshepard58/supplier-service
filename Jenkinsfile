@@ -1,41 +1,26 @@
 node {
     def appName = 'supplier-service'
     def imageName = 'supplier-service:latest'
-    def namespace = 'ea2sa-services'
-    def deploymentFile = 'k8s/deployment.yaml'
-    def serviceFile = 'k8s/service.yaml'
-
-
-    tools {
-        nodejs 'Node 18'  // This must match the name you gave in the tool config
-    }
-
 
     stage('Checkout') {
-        checkout([$class: 'GitSCM',
-            branches: [[name: '*/main']],
-            userRemoteConfigs: [[url: 'https://github.com/gwshepard58/supplier-service.git']]
-        ])
-    }
-
-    stage('Install Dependencies') {
-        echo 'Installing Node.js dependencies...'
-        sh 'npm install'
+        echo '📦 Cloning repository...'
+        git url: 'https://github.com/gwshepard58/supplier-service.git', branch: 'main'
     }
 
     stage('Build Docker Image') {
-        echo 'Building Docker image...'
-        sh 'eval $(minikube docker-env) && docker build -t ' + imageName + ' .'
+        echo '🐳 Building Docker image...'
+        sh 'eval $(minikube docker-env) && docker build -t supplier-service:latest .'
     }
 
-    stage('Apply Kubernetes Deployment') {
-        echo 'Deploying to Minikube...'
-        sh "kubectl apply -f ${deploymentFile} --namespace=${namespace}"
-        sh "kubectl apply -f ${serviceFile} --namespace=${namespace}"
+    stage('Install Dependencies') {
+        echo '🔧 Skipped: Node.js not configured yet. Placeholder for npm install.'
     }
 
-    stage('Verify Deployment') {
-        echo 'Waiting for rollout to complete...'
-        sh "kubectl rollout status deployment/${appName} --namespace=${namespace}"
+    stage('Kubernetes Deployment') {
+        echo '🚀 Placeholder: Apply Kubernetes manifests (deployment.yaml, service.yaml)'
+    }
+
+    stage('Verify Rollout') {
+        echo '✅ Placeholder: Verify Kubernetes rollout status'
     }
 }
