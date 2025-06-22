@@ -5,6 +5,12 @@ node {
     def deploymentFile = 'k8s/deployment.yaml'
     def serviceFile = 'k8s/service.yaml'
 
+
+    tools {
+        nodejs 'Node 18'  // This must match the name you gave in the tool config
+    }
+
+
     stage('Checkout') {
         checkout([$class: 'GitSCM',
             branches: [[name: '*/main']],
