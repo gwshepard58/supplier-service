@@ -1,16 +1,42 @@
-version: "3.8"
-
-services:
-  supplier-service:
-    build: .
-    container_name: supplier-service
-    ports:
-      - "3001:3001"
-    env_file:
-      - .env
-    networks:
-      - ea2sa-net
+version: "3.9"
 
 networks:
   ea2sa-net:
-    external: true
+    driver: bridge
+
+services:
+  northwind-postgres:
+    image: postgres:14
+    container_name: northwind-postgres
+    environment:
+      POSTGRES_DB: northwind
+      POSTGRES_USER: gary
+      POSTGRES_PASSWORD: Spen1cer
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
+    networks:
+      - ea2sa-net
+
+  supplier-service:
+    build:
+      context: . # assumes Dockerfile is in current directory
+      dockerfile: Dockerfile
+    container_name: supplier-service
+    environment:
+      DB_HOST: northwind-postgres
+      DB_PORT: 5432
+      DB_NAME: northwind
+      DB_USER: gary
+      DB_PASSWORD: Spen1cer
+    ports:
+      - "3001:3001"
+    depends_on:
+      - northwind-postgres
+    networks:
+      - ea2sa-net
+
+volumes:
+  pgdata:
