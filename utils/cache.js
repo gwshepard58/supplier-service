@@ -1,9 +1,9 @@
 const Memcached = require('memcached');
 
-// Connect to local Memcached server or Docker container
-const memcached = new Memcached('localhost:11211');
+// Use direct IP of the container
+const memcached = new Memcached('172.17.0.2:11211');
 
-const CACHE_TTL = 60; // seconds
+const CACHE_TTL = 60;
 
 function getCache(key) {
   return new Promise((resolve, reject) => {
@@ -32,9 +32,4 @@ function deleteCache(key) {
   });
 }
 
-module.exports = {
-  getCache,
-  setCache,
-  deleteCache,
-};
-
+module.exports = { getCache, setCache, deleteCache };
