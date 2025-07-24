@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supplier-service
+  namespace: supplier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: supplier-service
+  template:
+    metadata:
+      labels:
+        app: supplier-service
+    spec:
+      containers:
+      - name: supplier-service
+        image: supplier-service:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
