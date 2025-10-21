@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../db'); 
 const { getCache, setCache, deleteCache } = require('../utils/cache');
 
 exports.getAllSuppliers = async (req, res) => {
@@ -51,6 +51,7 @@ exports.createSupplier = async (req, res) => {
     );
 
     await deleteCache('suppliers:all'); // Invalidate cache
+    await deleteCache('suppliers:count'); // also invalidate count cache
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
@@ -75,6 +76,7 @@ exports.updateSupplier = async (req, res) => {
       res.status(404).send('Supplier not found');
     } else {
       await deleteCache('suppliers:all');
+      await deleteCache('suppliers:count'); // invalidate count too
       await deleteCache(`suppliers:id:${id}`);
       res.json(result.rows[0]);
     }
@@ -92,11 +94,32 @@ exports.deleteSupplier = async (req, res) => {
       res.status(404).send('Supplier not found');
     } else {
       await deleteCache('suppliers:all');
+      await deleteCache('suppliers:count'); // invalidate count cache
       await deleteCache(`suppliers:id:${id}`);
       res.json({ message: 'Supplier deleted', supplier: result.rows[0] });
     }
   } catch (err) {
     console.error(err);
     res.status(500).send('Error deleting supplier');
+  }
+};
+
+// ✅ New: Get suppliers count
+exports.getSuppliersCount = async (req, res) => {
+  const cacheKey = 'suppliers:count';
+  try {
+    const cached = await getCache(cacheKey);
+    if (cached) {
+      return res.json({ count: Number(cached) });
+    }
+
+    const result = await pool.query('SELECT COUNT(*) FROM suppliers');
+    const count = result.rows[0].count;
+
+    await setCache(cacheKey, count);
+    res.json({ count: Number(count) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching supplier count');
   }
 };

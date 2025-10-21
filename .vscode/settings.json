@@ -1,3 +1,8 @@
 {
-    "jira-plugin.workingProject": ""
+    "jira-plugin.workingProject": "",
+    "jiraIssueLinker.taskGetterURL": "",
+    "jiraIssueLinker.jiraBaseURL": "https://ea2sa.atlassian.net",
+    "jira.baseUrl": "https://ea2sa.atlassian.net",
+    "jira.projectNames": "ea2sa-order-service,ea2sa-supplier-service",
+    "jira-plugin.baseUrl": "https://ea2sa.atlassian.net"
 }

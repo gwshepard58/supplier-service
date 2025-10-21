@@ -32,8 +32,19 @@ const swaggerOptions = {
   apis: ['./routes/*.js'],
 };
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
+
+// ✅ Serve raw OpenAPI JSON spec
+app.get('/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerDocs);
+});
+
+// ✅ Serve Swagger UI HTML (for browser)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+/**
+ * Supplier routes
+ */
 app.use('/api/suppliers', supplierRoutes);
 
 const PORT = process.env.PORT || 3001;
@@ -42,7 +53,8 @@ const HOST = '0.0.0.0';
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, HOST, () => {
     console.log(`Server running on http://${HOST}:${PORT}`);
-    console.log(`Swagger docs at http://${HOST}:${PORT}/api-docs`);
+    console.log(`Swagger UI at http://${HOST}:${PORT}/api-docs`);
+    console.log(`Raw spec at http://${HOST}:${PORT}/swagger.json`);
   });
 }
 

@@ -23,6 +23,26 @@ router.get('/', supplierController.getAllSuppliers);
 
 /**
  * @swagger
+ * /api/suppliers/count:
+ *   get:
+ *     summary: Retrieve total supplier count
+ *     tags: [Suppliers]
+ *     responses:
+ *       200:
+ *         description: Supplier count
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: integer
+ *                   example: 1228
+ */
+router.get('/count', supplierController.getSuppliersCount);
+
+/**
+ * @swagger
  * /api/suppliers/{id}:
  *   get:
  *     summary: Retrieve a supplier by ID

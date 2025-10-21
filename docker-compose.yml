@@ -1,42 +1,37 @@
 version: "3.9"
 
-networks:
-  ea2sa-net:
-    driver: bridge
-
 services:
-  northwind-postgres:
-    image: postgres:14
-    container_name: northwind-postgres
-    environment:
-      POSTGRES_DB: northwind
-      POSTGRES_USER: gary
-      POSTGRES_PASSWORD: Spen1cer
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
-    networks:
-      - ea2sa-net
-
   supplier-service:
     build:
-      context: . # assumes Dockerfile is in current directory
+      context: . # assumes Dockerfile is in the same directory
       dockerfile: Dockerfile
     container_name: supplier-service
-    environment:
-      DB_HOST: northwind-postgres
-      DB_PORT: 5432
-      DB_NAME: northwind
-      DB_USER: gary
-      DB_PASSWORD: Spen1cer
+    restart: always
+
+    env_file:
+      - supplier.env
+
     ports:
-      - "3001:3001"
-    depends_on:
-      - northwind-postgres
+      - "${PORT:-3001}:3001"
+
+    depends_on: [] # no need to start other services; they already exist
+
     networks:
       - ea2sa-net
+      - ea2sa-erp-phoenix # so it can reach the database (northwind_erp)
+      - supplier-service_ea2sa-net
+      - product-service_ea2sa-net
+      - order_ea2sa-net
 
-volumes:
-  pgdata:
+# External networks (must already exist)
+networks:
+  ea2sa-net:
+    external: true
+  ea2sa-erp-phoenix:
+    external: true
+  supplier-service_ea2sa-net:
+    external: true
+  product-service_ea2sa-net:
+    external: true
+  order_ea2sa-net:
+    external: true
